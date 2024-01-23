@@ -1,8 +1,8 @@
 body {
-    background: #000000;
+    background: #fff;
     padding: 0px;
     margin: 0px;
-    font-family: 'Rajdhani', sans-serif;
+    font-family: 'Work Sans', sans-serif;
 }
 
 canvas {
@@ -12,4 +12,5 @@ canvas {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    background: #000000;
 }

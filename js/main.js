@@ -8,12 +8,12 @@ var gameOptions = {
 
     // prize names, starting from 12 o'clock going clockwise
     slicePrizes: [
-        "🎉 5% OFF",
-        "🎉 10% OFF",
-        "🎉 15% OFF",
-        "🎉 25% OFF",
-        "🎉 50% OFF",
-        "🎉 FREE PASTRY 🍰"
+        "Flat 15% OFF",
+        "Better Luck Next Time",
+        "T-Shirt",
+        "Better Luck Next Time",
+        "Surprise Gift",
+        "Spin Again"
     ],
 
     // wheel rotation duration, in milliseconds
@@ -36,7 +36,7 @@ window.onload = function () {
         height: 850,
 
         // game background color
-        backgroundColor: 0x880044,
+        backgroundColor: 0xFFFFFF,
 
         // scenes used by the game
         scene: [playGame]
@@ -77,9 +77,9 @@ class playGame extends Phaser.Scene {
 
         // adding the text field
         this.prizeText = this.add.text(game.config.width / 2, game.config.height - 35, "SPIN TO WIN", {
-            font: "bold 64px Rajdhani",
+            font: "bold 64px Work Sans",
             align: "center",
-            color: "white"
+            color: "black"
         });
 
         // center the text
@@ -94,55 +94,61 @@ class playGame extends Phaser.Scene {
 
     // function to spin the wheel
     spinWheel() {
-
-        // can we spin the wheel?
+        // Can we spin the wheel?
         if (this.canSpin) {
-
-            // resetting text field
+            // Resetting text field
             this.prizeText.setText("");
-
-            // the wheel will spin round from 2 to 4 times. This is just coreography
+    
+            // The wheel will spin round from 2 to 4 times. This is just choreography
             var rounds = Phaser.Math.Between(4, 6);
-
-            // then will rotate by a random number from 0 to 360 degrees. This is the actual spin
+    
+            // Then will rotate by a random number from 0 to 360 degrees. This is the actual spin
             var degrees = Phaser.Math.Between(0, 360);
-
-            // before the wheel ends spinning, we already know the prize according to "degrees" rotation and the number of slices
-            var prize = gameOptions.slices - 1 - Math.floor(degrees / (360 / gameOptions.slices));
-
-            // now the wheel cannot spin because it's already spinning
+    
+            // Before the wheel ends spinning, we already know the prize according to "degrees" rotation and the number of slices
+            // Calculate the offset to shift the wheel to 11:45
+            // Calculate the offset to shift the wheel to 08:44
+            var offsetDegrees = 360 / (gameOptions.slices * 2) - 70;
+    
+            // Calculate the prize based on the adjusted rotation
+            var prize = gameOptions.slices - 1 - Math.floor((degrees + offsetDegrees) / (360 / gameOptions.slices));
+    
+            // Ensure that the prize value is within the valid range
+            prize = (prize + gameOptions.slices) % gameOptions.slices;
+    
+            // Now the wheel cannot spin because it's already spinning
             this.canSpin = false;
-
-            // animation tweeen for the spin: duration 3s, will rotate by (360 * rounds + degrees) degrees
-            // the quadratic easing will simulate friction
+    
+            // Animation tween for the spin: duration 3s, will rotate by (360 * rounds + degrees) degrees
+            // The quadratic easing will simulate friction
             this.tweens.add({
-
-                // adding the wheel to tween targets
+                // Adding the wheel to tween targets
                 targets: [this.wheel],
-
-                // angle destination
+    
+                // Angle destination
                 angle: 360 * rounds + degrees,
-
-                // tween duration
+    
+                // Tween duration
                 duration: gameOptions.rotationTime,
-
-                // tween easing
+    
+                // Tween easing
                 ease: "Cubic.easeOut",
-
-                // callback scope
+    
+                // Callback scope
                 callbackScope: this,
-
-                // function to be executed once the tween has been completed
+    
+                // Callback function to be executed once the tween has been completed
                 onComplete: function (tween) {
-                    // displaying prize text
+                    // Displaying prize text
                     this.prizeText.setText(gameOptions.slicePrizes[prize]);
-
-                    // player can spin again
-                    this.canSpin = false;
+    
+                    // Player can spin again
+                    this.canSpin = true;
                 }
             });
         }
     }
+    
 }
 
 // pure javascript to scale the game
